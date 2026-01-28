@@ -1,0 +1,20 @@
+.layout {
+  display: flex;
+  height: 100vh; /* full height */
+}
+
+/* Sidebar styles */
+app-sidebar {
+  width: 250px; /* fixed width */
+  background-color: #f5f5f5;
+  border-right: 1px solid #ddd;
+  height: 100%;
+}
+
+/* Main content next to sidebar */
+.main-content {
+  flex: 1; /* takes remaining space */
+  padding: 20px;
+  overflow-y: auto; /* scroll if content is long */
+  background-color: #fff;
+}

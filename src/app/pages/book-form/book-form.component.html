@@ -1,0 +1,64 @@
+<h1>{{ isEdit ? 'Edit Book' : 'Add Book' }}</h1>
+<hr/>
+
+<form (ngSubmit)="save()">
+  <div>
+    <mat-form-field class="full-width" appearance="outline">
+      <mat-label>Title</mat-label>
+      <input matInput [(ngModel)]="book.title" name="title" required />
+    </mat-form-field>
+  </div>
+
+  <div>
+    <mat-form-field class="full-width" appearance="outline">
+      <mat-label>Author</mat-label>
+      <input matInput [(ngModel)]="book.author" name="author" />
+    </mat-form-field>
+  </div>
+
+  <div>
+    <mat-form-field class="full-width" appearance="outline">
+      <mat-label>Description</mat-label>
+      <textarea matInput [(ngModel)]="book.description" name="description" placeholder="Insert synopsis..."></textarea>
+    </mat-form-field>
+  </div>
+  
+  <div>
+    <mat-form-field class="full-width" appearance="outline">
+      <mat-label>Total Pages</mat-label>
+      <input matInput [(ngModel)]="book.totalPages" name="totalPages" />
+    </mat-form-field>
+  </div>
+
+  <div class="full-width" appearance="outline">
+    <label>Your book PDF file</label>
+    <input
+      type="file"
+      accept="application/pdf"
+      hidden
+      #pdfInput
+      (change)="onPdfSelect($event)"
+    />
+    &nbsp; 
+    <button mat-raised-button type="button" (click)="pdfInput.click()">
+      Select PDF
+    </button>
+    <span *ngIf="book.bookUrl">{{ book.bookUrl }}</span>
+  </div>
+
+  <div class="full-width" appearance="outline">
+    <label>Book cover image</label>
+    <input type="file" accept="image/*" hidden #imgInput (change)="onImageSelect($event)" />
+    &nbsp;
+    <button mat-raised-button type="button" (click)="imgInput.click()">
+      Select Image
+    </button>
+    <img *ngIf="preview" [src]="preview" width="120" />
+  </div>
+
+  <div>
+    <button mat-flat-button color="primary">
+      {{ isEdit ? 'Update' : 'Save' }}
+    </button>
+  </div>
+</form>

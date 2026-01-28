@@ -1,0 +1,26 @@
+<aside class="sidebar">
+    <nav>
+    <h2>
+        <a routerLink="/" routerLinkActive="active">
+            <mat-icon>home</mat-icon>
+            <span> Dashboard </span>
+        </a>
+    </h2>
+    <a routerLink="/books" routerLinkActive="active">
+        <mat-icon>menu_book</mat-icon>
+        <span> Books </span>
+    </a>
+    <a routerLink="/progress" routerLinkActive="active">
+        <mat-icon>trending_up</mat-icon>
+        <span> Progress </span>
+    </a>
+    <a routerLink="/profile" routerLinkActive="active">
+        <mat-icon>person</mat-icon>
+        <span> Profile </span>
+    </a>
+    <a (click)="logout()">
+        <mat-icon>logout</mat-icon>
+        <span> Logout </span>
+    </a>
+    </nav>
+</aside>
