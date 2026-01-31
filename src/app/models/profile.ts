@@ -5,8 +5,8 @@ export interface Profile {
     email: string;
     phone: string;
     status: string;
-    book_id: string;
-    created_at: number;
+    bookId: string;
+    createdAt: number;
     password: string;
     username: string;
 }

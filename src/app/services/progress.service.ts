@@ -24,8 +24,8 @@ export class ProgressService {
     }
     
     // BOOK BY ID
-    getBook(book_id: string): Observable<Book> {
-        return this.http.get<Book>(`${this.bookUrl}/${book_id}`);
+    getBook(bookId: string): Observable<Book> {
+        return this.http.get<Book>(`${this.bookUrl}/${bookId}`);
     }
 
     // SAVE PROGRESS

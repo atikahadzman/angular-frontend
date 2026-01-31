@@ -81,14 +81,14 @@ export class BooksReaderComponent implements OnInit {
     }
 
     const progress: Partial<Progress> = {
-      book_id: this.bookId,
-      user_id: userId,
-      current_page: this.currentPage,
-      last_read_at: Date.now(),
+      bookId: this.bookId,
+      userId: userId,
+      currentPage: this.currentPage,
+      lastReadAt: Date.now(),
     };
 
     if (this.currentPage === 1) {
-      progress.started_at = Date.now();
+      progress.startedAt = Date.now();
     }
 
     this.bookService.getById(this.bookId).subscribe({
@@ -96,7 +96,7 @@ export class BooksReaderComponent implements OnInit {
         const totalPages = book.totalPages;
 
         if (this.currentPage === totalPages) {
-          progress.completed_at = Date.now();
+          progress.completedAt = Date.now();
         }
       },
       error: (err) => console.error('Failed to get book', err)
@@ -116,11 +116,11 @@ export class BooksReaderComponent implements OnInit {
     }
 
     this.progressService.getAll().subscribe(progressList => {
-      const bookmark = progressList.find(p => p.book_id === this.bookId && p.user_id === userId);
+      const bookmark = progressList.find(p => p.bookId === this.bookId && p.userId === userId);
 
       if (bookmark) {
         console.log('bookmark:' + JSON.stringify(bookmark));
-        this.currentPage = bookmark.current_page;
+        this.currentPage = bookmark.currentPage;
       }
     });
   }

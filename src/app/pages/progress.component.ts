@@ -37,11 +37,12 @@ export class ProgressComponent implements OnInit {
   ngOnInit(): void {
     this.progress$ = this.progresService.getAll().pipe(
       switchMap((progresses) => {
-        const requests = progresses.map((p) =>
-          this.progresService.getBook(p.book_id).pipe(
+        const requests = progresses.map((p) => {
+          return this.progresService.getBook(p.bookId).pipe(
             map((book) => ({ ...p, book }))
-          )
-        );
+          );
+        });
+
         return forkJoin(requests);
       })
     );
