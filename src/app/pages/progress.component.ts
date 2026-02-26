@@ -9,7 +9,7 @@ import { MatBadgeModule } from '@angular/material/badge';
 import { MatCardModule } from '@angular/material/card';
 import { MatTableModule } from '@angular/material/table';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
-import { RouterModule } from '@angular/router';
+import { RouterModule, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-progress',
@@ -29,8 +29,12 @@ import { RouterModule } from '@angular/router';
 export class ProgressComponent implements OnInit {
   progress$!: Observable<Progress[]>;
   displayedColumns: string[] = ['title', 'progress', 'status', 'action'];
+  id?: string;
 
-  constructor(private progresService: ProgressService) {
+  constructor(
+    private progresService: ProgressService,
+    private route: ActivatedRoute,
+  ) {
     this.progress$ = this.progresService.getAll();
   }
 
@@ -46,5 +50,24 @@ export class ProgressComponent implements OnInit {
         return forkJoin(requests);
       })
     );
+  }
+
+  delete(id: string): void {
+    const confirmed = confirm('Are you sure you want to delete this progress?');
+
+    if (!confirmed) {
+      return;
+    }
+
+    this.progresService.delete(id).subscribe({
+      next: () => {
+        console.log('Progress deleted');
+        window.location.reload();
+      },
+      error: (err) => {
+        console.error('Delete failed', err);
+        window.location.reload();
+      }
+    });
   }
 }

@@ -39,12 +39,18 @@
     <th mat-header-cell *matHeaderCellDef>Action</th>
     <td mat-cell *matCellDef="let progress">
       <button
-        mat-button
+        mat-flat-button
         color="primary"
         [routerLink]="['/books', progress.bookId, 'read']"
         [queryParams]="{ page: progress.currentPage, id: progress.id }"
       >
         Read
+      </button>
+
+      <button
+        mat-button
+        (click)="delete(progress.id)">
+        Delete
       </button>
 
     </td>

@@ -35,4 +35,8 @@ export class ProgressService {
         }
         return this.http.post<Progress>(this.apiUrl, progress);
     }
+
+    delete(id: string): Observable<Progress> {
+        return this.http.delete<Progress>(`${this.apiUrl}/${id}`);
+    }
 }
