@@ -1,8 +1,7 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit } from '@angular/core';
-import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { PdfViewerModule, PDFDocumentProxy } from 'ng2-pdf-viewer';
+import { NgxExtendedPdfViewerModule } from 'ngx-extended-pdf-viewer';
 import { AuthService } from '../services/auth.service';
 import { BookService } from '../services/book.service';
 import { ProgressService } from '../services/progress.service';
@@ -15,21 +14,21 @@ import { MatButtonModule } from '@angular/material/button';
   standalone: true,
   imports: [
     CommonModule,
-    PdfViewerModule,
+    NgxExtendedPdfViewerModule,
     MatButtonModule,
   ],
   templateUrl: './books-reader.component.html',
   styleUrl: './books-reader.component.css',
 })
 export class BooksReaderComponent implements OnInit {
-  pdfUrl?: string;
+  pdfUrl?: string | Blob;
+  pdfKey = 0;
   pdfTitle?: string;
+  bookId?: string;
+  id?: string;
 
   currentPage = 1;
   totalPages = 1;
-
-  bookId?: string;
-
   // set default value for redirect the last page user read
   lastPage: number = 1;
 
@@ -37,7 +36,8 @@ export class BooksReaderComponent implements OnInit {
     private route: ActivatedRoute,
     private bookService: BookService,
     private progressService: ProgressService,
-    private authService: AuthService
+    private authService: AuthService,
+    private cdr: ChangeDetectorRef, // enable PDF load
   ) {}
 
   ngOnInit(): void {
@@ -46,13 +46,18 @@ export class BooksReaderComponent implements OnInit {
 
     this.route.queryParamMap.subscribe(q => {
       const page = q.get('page');
-      this.currentPage = page ? +page : 1;
+      this.currentPage = page ? + page : 1;
+
+      this.id = q.get('id') ?? undefined;
+      console.log('=== progress id === '+ this.id);
     });
 
     this.bookService.getById(this.bookId).subscribe(book => {
       if (book.bookUrl) {
         this.pdfUrl = `http://localhost:8080/uploads/${book.bookUrl}`;
         this.pdfTitle = book.title;
+        this.totalPages = book.totalPages;
+        this.cdr.detectChanges();
       }
     });
   }
@@ -61,8 +66,8 @@ export class BooksReaderComponent implements OnInit {
     this.currentPage = page;
   }
 
-  onPdfLoad(pdf: PDFDocumentProxy) {
-    this.totalPages = pdf.numPages;
+  onPdfLoad(event: any) {
+    this.totalPages = event.pagesCount;
   }
 
   jumpToPage(page: number) {
@@ -73,34 +78,18 @@ export class BooksReaderComponent implements OnInit {
 
   bookmarkPage() {
     const userId = this.authService.getUserId();
-    console.log('userId: ' + JSON.stringify(userId));
-    console.log('currentPage: ' + JSON.stringify(this.currentPage));
 
     if (!this.bookId) {
       return;
     }
 
     const progress: Partial<Progress> = {
+      id: this.id,
       bookId: this.bookId,
       userId: userId,
       currentPage: this.currentPage,
       lastReadAt: Date.now(),
     };
-
-    if (this.currentPage === 1) {
-      progress.startedAt = Date.now();
-    }
-
-    this.bookService.getById(this.bookId).subscribe({
-      next: (book) => {
-        const totalPages = book.totalPages;
-
-        if (this.currentPage === totalPages) {
-          progress.completedAt = Date.now();
-        }
-      },
-      error: (err) => console.error('Failed to get book', err)
-    });
 
     this.progressService.saveProgress(progress).subscribe({
       next: () => alert(`Bookmark saved: Page ${this.currentPage}`),

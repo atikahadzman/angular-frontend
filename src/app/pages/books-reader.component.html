@@ -24,17 +24,17 @@
     </button>
   </div>
 
-  <pdf-viewer
+  <ngx-extended-pdf-viewer
     *ngIf="pdfUrl"
     [src]="pdfUrl"
-    [page]="currentPage"
-    [render-text]="true"
-    [original-size]="false"
-    [show-all]="true"
-    [fit-to-page]="true"
+    height="90vh"
+    assetsFolder="assets"
+    zoom="page-fit"
     (pageChange)="onPageChange($event)"
-    (after-load-complete)="onPdfLoad($event)"
-    style="display: block; width: 100%; height: 90vh;"
-  ></pdf-viewer>
+    (pagesLoaded)="onPdfLoad($event)">
+
+    <ng-template ngxExtendedPdfViewerToolbar>
+    </ng-template>
+  </ngx-extended-pdf-viewer>
 
 </div>
